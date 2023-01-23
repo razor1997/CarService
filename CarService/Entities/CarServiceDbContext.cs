@@ -12,6 +12,9 @@ namespace CarService.Entities
         public DbSet<Car> Cars { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Repair> Repairs { get; set; }
+        public DbSet<CarMarket> CarMarkets { get; set; }
+        public DbSet<CarMarketAddress> CarMarketAddresses { get; set; }
+        public DbSet<CarPart> CarParts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,11 +22,18 @@ namespace CarService.Entities
                 .Property(r => r.Mark)
                 .HasMaxLength(25);
             modelBuilder.Entity<User>()
-                .Property(r => r.Name)
+                .Property(u => u.Name)
                 .IsRequired();
             //modelBuilder.Entity<User>()
             //    .Property(u => u.SurName)
             //    .HasMaxLength(50);
+            modelBuilder.Entity<CarMarket>()
+                .Property(cm => cm.Name)
+                .IsRequired()
+                .HasMaxLength(25);
+            modelBuilder.Entity<CarPart>()
+                .Property(cp => cp.Category)
+                .IsRequired();
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

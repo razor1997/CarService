@@ -1,5 +1,6 @@
 using AutoMapper;
 using CarService.Entities;
+using CarService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,8 @@ namespace CarService
             services.AddDbContext<CarServiceDbContext>();
             services.AddScoped<CarSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
+            services.AddScoped<Services.ICarService, Services.CarService>();
+            services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

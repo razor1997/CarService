@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CarService.Entities;
 using CarService.Models;
+using CarService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,46 +13,52 @@ namespace CarService.Controllers
     [Route("api/car")]
     public class CarController : ControllerBase
     {
-        private readonly CarServiceDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly ICarService _carService;
 
-        public CarController(CarServiceDbContext dbContext, IMapper mapper)
+        public CarController(ICarService carService)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _carService = carService;
         }
         [HttpGet]
         public ActionResult<IEnumerable<CarDto>> GetAll()
         {
-            var cars = _dbContext
-                .Cars
-                //.Include(c => c.AddSomething) temporary
-                .ToList();
-            var carsDtos = _mapper.Map<List<CarDto>>(cars);
 
-            return Ok(carsDtos);
+            var cars = _carService.GetAll();
+            return Ok(cars);
         }
         [HttpGet("{id}")]
         public ActionResult <CarDto> Get([FromRoute] int id)
         {
-            var car = _dbContext
-                .Cars
-                //.Include(c => c.AddSomething) temporary
-                .FirstOrDefault(c => c.Id == id);
+            var car = _carService.GetById(id);   
+
             if(car is null)
             {
                 return NotFound();
             }
-            var carDto = _mapper.Map<CarDto>(car);
+
             return Ok(car); 
         }
         [HttpPost]
         public ActionResult CreateCar([FromBody] CreateCarDto dto)
         {
-            var car = _mapper.Map<Car>(dto);
-            _dbContext.Cars.Add(car);
-            _dbContext.SaveChanges();
-            return Created($"/api/car/{car.Id}", null);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _carService.Create(dto);
+            return Created($"/api/car/{id}", null);
+        }
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            var isDeleted =_carService.Delete(id);
+
+            if(isDeleted)
+            {
+                return NoContent();
+            }
+            return NotFound();
         }
     }
 
