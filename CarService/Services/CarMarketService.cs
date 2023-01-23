@@ -63,5 +63,22 @@ namespace CarService.Services
 
             return true;
         }
+        public bool Update(int id, UpdateCarMarketDto dto)
+        {
+            var carMarket = _dbContext
+                .CarMarkets
+                .FirstOrDefault(c => c.Id == id);
+            if(carMarket is null)
+            {
+                return false;
+            }
+            carMarket.Name = dto.Name;
+            carMarket.Description = dto.Description;
+            carMarket.HasDelivery = dto.HasDelivery;
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }

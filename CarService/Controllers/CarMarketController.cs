@@ -56,5 +56,20 @@ namespace CarService.Controllers
             }
             return NotFound();
         }
+        [HttpPut("{id}")]
+        public ActionResult Update([FromBody] UpdateCarMarketDto dto, [FromRoute] int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var isUpdated = _carMarketService.Update(id, dto);
+
+            if(!isUpdated)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
     }
 }
