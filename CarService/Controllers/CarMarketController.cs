@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace CarService.Controllers
 {
+    [Route("api/carmarket")]
+    [ApiController]
     public class CarMarketController : Controller
     {
         private readonly ICarMarketService _carMarketService;
@@ -21,11 +23,6 @@ namespace CarService.Controllers
         {
             var car = _carMarketService.GetById(id);
 
-            if (car is null)
-            {
-                return NotFound();
-            }
-
             return Ok(car);
         }
         [HttpGet]
@@ -37,38 +34,20 @@ namespace CarService.Controllers
         [HttpPost]
         public ActionResult CreateCar([FromBody] CreateCarMarketDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var id = _carMarketService.Create(dto);
             return Created($"/api/car/{id}", null);
         }
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            var isDeleted = _carMarketService.Delete(id);
-
-            if (isDeleted)
-            {
-                return NoContent();
-            }
-            return NotFound();
+            _carMarketService.Delete(id);
+            return NoContent();
         }
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateCarMarketDto dto, [FromRoute] int id)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var isUpdated = _carMarketService.Update(id, dto);
+            _carMarketService.Update(id, dto);
 
-            if(!isUpdated)
-            {
-                return NotFound();
-            }
             return Ok();
         }
     }

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarService.ErrorHandlingMiddleware;
 
 namespace CarService
 {
@@ -33,6 +34,8 @@ namespace CarService
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<Services.ICarService, Services.CarService>();
             services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
+            services.AddScoped<ErrorHandlingMiddleware.ErrorHandlingMiddleware>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,8 +52,15 @@ namespace CarService
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware.ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Car Service API");
+            });
+
             app.UseStaticFiles();
 
             app.UseRouting();

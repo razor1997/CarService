@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using CarService.Entities;
 using CarService.Models;
+using CarService.NotFoundException;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,13 @@ namespace CarService.Services
     {
         private readonly IMapper _mapper;
         private readonly CarServiceDbContext _dbContext;
+        private readonly ILogger<CarMarketService> _logger;
 
-        public CarMarketService(IMapper mapper, CarServiceDbContext dbContext)
+        public CarMarketService(IMapper mapper, CarServiceDbContext dbContext, ILogger<CarMarketService> logger)
         {
             _mapper = mapper;
             _dbContext = dbContext;
+            _logger = logger;
         }
         public CarMarketDto GetById(int id)
         {
@@ -27,10 +31,9 @@ namespace CarService.Services
                 .Include(c => c.Address)
                 .Include(c => c.Parts)
                 .FirstOrDefault(c => c.Id == id);
-            if (carMarket is null)
-            {
-                return null;
-            }
+
+            if (carMarket is null) throw new NotFoundException.NotFoundException("Car market not found");
+
             var result = _mapper.Map<CarMarketDto>(carMarket);
             return result;
         }
@@ -51,34 +54,30 @@ namespace CarService.Services
             _dbContext.SaveChanges();
             return carMarket.Id;
         }
-        public bool Delete(int id)
+        public void Delete(int id)
         {
+            _logger.LogError($"Car Market with id:{ id} DELETE action invoked");
             var carMarket = _dbContext
             .CarMarkets
             .FirstOrDefault(c => c.Id == id);
 
-            if (carMarket is null) return false;
+            if (carMarket is null) throw new NotFoundException.NotFoundException("Car market not found");
             _dbContext.CarMarkets.Remove(carMarket);
             _dbContext.SaveChanges();
-
-            return true;
         }
-        public bool Update(int id, UpdateCarMarketDto dto)
+        public void Update(int id, UpdateCarMarketDto dto)
         {
             var carMarket = _dbContext
                 .CarMarkets
                 .FirstOrDefault(c => c.Id == id);
-            if(carMarket is null)
-            {
-                return false;
-            }
+
+            if (carMarket is null) throw new NotFoundException.NotFoundException("Car market not found");
+
             carMarket.Name = dto.Name;
             carMarket.Description = dto.Description;
             carMarket.HasDelivery = dto.HasDelivery;
 
             _dbContext.SaveChanges();
-
-            return true;
         }
     }
 }
