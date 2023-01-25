@@ -109,7 +109,7 @@ namespace CarService.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("CarMarketId")
+                    b.Property<int>("CarMarketId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -204,9 +204,13 @@ namespace CarService.Migrations
 
             modelBuilder.Entity("CarService.Entities.CarPart", b =>
                 {
-                    b.HasOne("CarService.Entities.CarMarket", null)
+                    b.HasOne("CarService.Entities.CarMarket", "CarMarket")
                         .WithMany("Parts")
-                        .HasForeignKey("CarMarketId");
+                        .HasForeignKey("CarMarketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CarMarket");
                 });
 
             modelBuilder.Entity("CarService.Entities.Repair", b =>

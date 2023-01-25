@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CarService.ErrorHandlingMiddleware;
+using CarService.Middleware;
 
 namespace CarService
 {
@@ -34,7 +34,9 @@ namespace CarService
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<Services.ICarService, Services.CarService>();
             services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
-            services.AddScoped<ErrorHandlingMiddleware.ErrorHandlingMiddleware>();
+            services.AddScoped<ICarPartService, CarPartService>();
+            services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<RequestTimeMiddleware>();
             services.AddSwaggerGen();
         }
 
@@ -52,7 +54,8 @@ namespace CarService
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseMiddleware<ErrorHandlingMiddleware.ErrorHandlingMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseSwagger();

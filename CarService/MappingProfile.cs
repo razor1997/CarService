@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CarService.Controllers;
 using CarService.Entities;
 using CarService.Models;
 using CarService.Services;
@@ -23,6 +24,7 @@ namespace CarService
                 .ForMember(m => m.Street, c => c.MapFrom(s => s.Address.Street))
                 .ForMember(m => m.PostalCode, c => c.MapFrom(s => s.Address.PostalCode));
             CreateMap<CarPart, CarPartDto>();
+            CreateMap<CreateCarPartDto, CarPart>();
             CreateMap<CreateCarMarketDto, CarMarket>()
                 .ForMember(cm => cm.Address, ccm => ccm.MapFrom(dto => new CarMarketAddress()
                 {
@@ -30,6 +32,7 @@ namespace CarService
                     PostalCode = dto.PostalCode,
                     Street = dto.Street
                 }));
+
         }
     }
 }
