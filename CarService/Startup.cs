@@ -12,6 +12,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarService.Middleware;
+using Microsoft.AspNetCore.Identity;
+using CarService.Models;
+using CarService.Models.Validators;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CarService
 {
@@ -27,14 +34,37 @@ namespace CarService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var authenticationSettings = new AuthenticationSettings();
+
+            Configuration.GetSection("Authentication").Bind(authenticationSettings);
+            services.AddSingleton(authenticationSettings);
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "Bearer";
+                option.DefaultScheme = "Bearer";
+                option.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = authenticationSettings.JwtIssuer,
+                    ValidAudience = authenticationSettings.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+                };
+            });
             services.AddRazorPages();
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<CarServiceDbContext>();
             services.AddScoped<CarSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<Services.ICarService, Services.CarService>();
             services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICarPartService, CarPartService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddSwaggerGen();
@@ -56,6 +86,7 @@ namespace CarService
             }
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMiddleware<RequestTimeMiddleware>();
+            app.UseAuthentication();
             app.UseHttpsRedirection();
 
             app.UseSwagger();
