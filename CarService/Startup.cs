@@ -19,6 +19,8 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CarService.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarService
 {
@@ -54,6 +56,15 @@ namespace CarService
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
                 };
             });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasPhoneNumber", builder => builder.RequireClaim("PhoneNumber"));
+                options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirements(20)));
+                options.AddPolicy("CreatedAtLeast2CarMarkets", builder => builder.AddRequirements(new MinimumCarMarketsCreatedRequirements(2)));
+            });
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementsHandler>();
+            services.AddScoped<IAuthorizationHandler, MinimumCarMarketsCreatedRequirementsHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddRazorPages();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<CarServiceDbContext>();
@@ -67,6 +78,8 @@ namespace CarService
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<RequestTimeMiddleware>();
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddHttpContextAccessor();
             services.AddSwaggerGen();
         }
 
@@ -98,7 +111,7 @@ namespace CarService
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

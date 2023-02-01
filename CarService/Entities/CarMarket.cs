@@ -14,6 +14,8 @@ namespace CarService.Entities
         public string ContactEmail { get; set; }
         public string ContactNumber { get; set; }
         public int AddressId { get; set; }
+        public int? OwnerId { get; set; }
+        public User Owner { get; set; }
         public virtual CarMarketAddress Address{ get; set;}
         public virtual List<CarPart> Parts { get; set; } 
 

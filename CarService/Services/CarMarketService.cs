@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using CarService.Authorization;
 using CarService.Entities;
 using CarService.Models;
 using CarService.NotFoundException;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CarService.Services
@@ -17,12 +20,17 @@ namespace CarService.Services
         private readonly IMapper _mapper;
         private readonly CarServiceDbContext _dbContext;
         private readonly ILogger<CarMarketService> _logger;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public CarMarketService(IMapper mapper, CarServiceDbContext dbContext, ILogger<CarMarketService> logger)
+        public CarMarketService(IMapper mapper, CarServiceDbContext dbContext, ILogger<CarMarketService> logger,
+            IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
             _logger = logger;
+            _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
         public CarMarketDto GetById(int id)
         {
@@ -50,6 +58,7 @@ namespace CarService.Services
         public int Create(CreateCarMarketDto dto)
         {
             var carMarket = _mapper.Map<CarMarket>(dto);
+            carMarket.OwnerId = _userContextService.GetUserId;
             _dbContext.CarMarkets.Add(carMarket);
             _dbContext.SaveChanges();
             return carMarket.Id;
@@ -60,6 +69,9 @@ namespace CarService.Services
             var carMarket = _dbContext
             .CarMarkets
             .FirstOrDefault(c => c.Id == id);
+
+            var authorizationResult =
+            _authorizationService.AuthorizeAsync(_userContextService.User, carMarket, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
 
             if (carMarket is null) throw new NotFoundException.NotFoundException("Car market not found");
             _dbContext.CarMarkets.Remove(carMarket);
@@ -72,7 +84,13 @@ namespace CarService.Services
                 .FirstOrDefault(c => c.Id == id);
 
             if (carMarket is null) throw new NotFoundException.NotFoundException("Car market not found");
+            var authorizationResult =
+            _authorizationService.AuthorizeAsync(_userContextService.User, carMarket, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
+            if(!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
             carMarket.Name = dto.Name;
             carMarket.Description = dto.Description;
             carMarket.HasDelivery = dto.HasDelivery;
