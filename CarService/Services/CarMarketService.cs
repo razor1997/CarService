@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -45,15 +46,41 @@ namespace CarService.Services
             var result = _mapper.Map<CarMarketDto>(carMarket);
             return result;
         }
-        public IEnumerable<CarMarketDto> GetAll()
+        public PageResult<CarMarketDto> GetAll(CarMarketQuery query)
         {
-            var carMarkets = _dbContext
+            var baseQuery = _dbContext
                 .CarMarkets
                 .Include(c => c.Address)
                 .Include(c => c.Parts)
+                .Where(r => query.SearchPhrase == null ||
+                    (r.Name.ToLower().Contains(query.SearchPhrase) || r.Description.ToLower().Contains(query.SearchPhrase)));
+
+            if(string.IsNullOrEmpty(query.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<CarMarket, Object>>>
+                {
+                    { nameof(CarMarket.Name), c => c.Name},
+                    { nameof(CarMarket.Description), c => c.Description},
+                    //{ nameof(CarMarket.Ca), c => c.Name},
+                };
+
+                var selectedColumn = columnsSelector[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.ASC ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var carMarkets = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
                 .ToList();
+
             var carMarketsDtos = _mapper.Map<List<CarMarketDto>>(carMarkets);
-            return carMarketsDtos;
+
+            var countTotalItems = baseQuery.Count();
+
+            var result = new PageResult<CarMarketDto>(carMarketsDtos, countTotalItems, query.PageSize, query.PageNumber);
+            return result;
         }
         public int Create(CreateCarMarketDto dto)
         {

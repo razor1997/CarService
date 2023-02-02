@@ -31,9 +31,9 @@ namespace CarService.Controllers
         }
         [HttpGet]
         [Authorize(Policy = "CreatedAtLeast2CarMarkets")]// [AllowAnonymous]////allow to get without token
-        public ActionResult<IEnumerable<CarMarketDto>> GetAll()
+        public ActionResult<PageResult<CarMarketDto>> GetAll([FromQuery]CarMarketQuery query)
         {
-            var carMarketsDtos = _carMarketService.GetAll();
+            var carMarketsDtos = _carMarketService.GetAll(query);
             return Ok(carMarketsDtos);
         }
         [HttpPost]
