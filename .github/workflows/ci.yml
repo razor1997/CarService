@@ -1,0 +1,12 @@
+on:
+  push:
+    branches:[master-pipeline, develop-pipeline]
+    pull_request:
+      -master-pipeline
+    workflow_dispatch:
+  jobs:
+    build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run a one t
