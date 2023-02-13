@@ -82,5 +82,28 @@ namespace CarService
             };
             return cars;
         }
+        private IEnumerable<EngineType> GetEngineTypes()
+        {
+            var engineTypes = new List<EngineType>()
+            {
+                new EngineType
+                {
+                    Name = "Petrol"
+                },
+                new EngineType
+                {
+                    Name = "Diesel"
+                },
+                new EngineType
+                {
+                    Name = "LPG"
+                },
+                new EngineType
+                {
+                    Name = "Electric"
+                }
+            };
+            return engineTypes;
+        }
     }
 }

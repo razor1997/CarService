@@ -32,6 +32,7 @@ namespace CarService
                     PostalCode = dto.PostalCode,
                     Street = dto.Street
                 }));
+            CreateMap<Repair, RepairDto>();
 
         }
     }

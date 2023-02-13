@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarService.Controllers
 {
-    [Route("api/car")]
+    [Route("carservice/cars")]
     public class CarController : ControllerBase
     {
         private readonly ICarService _carService;
@@ -47,7 +47,7 @@ namespace CarService.Controllers
             }
 
             var id = _carService.Create(dto);
-            return Created($"/api/car/{id}", null);
+            return Created($"/carservice/cars/{id}", null);
         }
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)

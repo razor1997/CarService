@@ -37,9 +37,11 @@ namespace CarService
         public void ConfigureServices(IServiceCollection services)
         {
             var authenticationSettings = new AuthenticationSettings();
+            //var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             Configuration.GetSection("Authentication").Bind(authenticationSettings);
             services.AddSingleton(authenticationSettings);
+            //services.AddSingleton<IConfiguration>(configuration);
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = "Bearer";
