@@ -29,6 +29,12 @@ namespace CarService
                     _dbContext.Cars.AddRange(cars);
                     _dbContext.SaveChanges();
                 }
+                if(!_dbContext.EngineTypes.Any())
+                {
+                    var engineTypes = GetEngineTypes();
+                    _dbContext.EngineTypes.AddRange(engineTypes);
+                    _dbContext.SaveChanges();
+                }
             }
         }
         private IEnumerable<Role> GetRoles()
@@ -58,13 +64,13 @@ namespace CarService
                 {
                     Mark = "BMW",
                     Model = "Series 5",
-                    Type = (int)CarBody.cbCombi
+                    Body = (int)CarBody.cbCombi
                 },
                 new Car
                 {
                     Mark = "Mercedes-Benz",
                     Model = "C - Class",
-                    Type = (int)CarBody.cbSedan,
+                    Body = (int)CarBody.cbSedan,
                     Repairs = new List<Repair>
                     {
                         new Repair

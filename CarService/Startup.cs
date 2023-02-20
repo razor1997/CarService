@@ -100,7 +100,8 @@ namespace CarService
         {
             app.UseResponseCaching();
             app.UseStaticFiles();
-            app.UseCors("FrontEndClient");
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
             seeder.Seed();
             if (env.IsDevelopment())
             {

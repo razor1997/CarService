@@ -16,6 +16,7 @@ namespace CarService.Entities
         public DbSet<CarMarket> CarMarkets { get; set; }
         public DbSet<CarMarketAddress> CarMarketAddresses { get; set; }
         public DbSet<CarPart> CarParts { get; set; }
+        public DbSet<EngineType> EngineTypes { get; set; }
       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,7 +43,9 @@ namespace CarService.Entities
             modelBuilder.Entity<CarPart>()
                 .Property(cp => cp.Category)
                 .IsRequired();
-
+            modelBuilder.Entity<EngineType>()
+                .Property(e => e.Name)
+                .HasMaxLength(25);
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
