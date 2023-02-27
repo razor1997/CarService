@@ -13,6 +13,7 @@ namespace CarService.Models
         public string Mark { get; set; }
         public int Type { get; set; }
         public int Mileage { get; set; }
+        public int BuyCost { get; set; }
         public int YearProduction { get; set; }
         public int EngineCapacity { get; set; }
         public int EngineTypeId { get; set; }

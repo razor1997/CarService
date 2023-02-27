@@ -60,6 +60,13 @@ namespace CarService.Controllers
             }
             return NotFound();
         }
+        [HttpPut("{id}")]
+        public ActionResult Update([FromBody] CarDto dto, [FromRoute] int id)
+        {
+            _carService.Update(id, dto);
+
+            return Ok();
+        }
     }
 
 }

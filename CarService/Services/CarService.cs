@@ -62,5 +62,22 @@ namespace CarService.Services
 
             return true;
         }
+
+        public void Update(int id, CarDto dto)
+        {
+            var car = _dbContext
+                .Cars
+                .FirstOrDefault(c => c.Id == id);
+
+            if (car is null) throw new NotFoundException.NotFoundException("Car not found");
+
+            car.Mark = dto.Mark;
+            car.Model = dto.Model;
+            car.EngineType = dto.EngineType;
+            car.BuyCost = dto.BuyCost;
+            car.Capacity = dto.EngineCapacity;
+
+            _dbContext.SaveChanges();
+        }
     }
 }
