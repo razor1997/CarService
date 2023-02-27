@@ -1,0 +1,7 @@
+﻿
+namespace CarService.PrivateFiles
+{
+    public class private_file
+    {
+    }
+}

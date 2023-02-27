@@ -22,9 +22,9 @@ namespace CarService.Controllers
         [HttpPost]
         public ActionResult CreateUser(CreateUserDto dto)
         {
-            if(dto.Name.Length > 25)
+            if(!ModelState.IsValid)
             {
-                return BadRequest("");
+                return BadRequest(ModelState);
             }
 
             var user = _mapper.Map<User>(dto);

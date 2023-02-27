@@ -7,7 +7,6 @@ namespace CarService.Models
 {
     public class CreateCarDto
     {
-        public int Id { get; set; }
         public string Model { get; set; }
         public string Mark { get; set; }
         public int Type { get; set; }
