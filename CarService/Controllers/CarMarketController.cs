@@ -29,11 +29,18 @@ namespace CarService.Controllers
 
             return Ok(car);
         }
+        //[HttpGet]
+        //[Authorize(Policy = "CreatedAtLeast2CarMarkets")]// [AllowAnonymous]////allow to get without token
+        //public ActionResult<PageResult<CarMarketDto>> GetAll([FromQuery]CarMarketQuery query)
+        //{
+        //    var carMarketsDtos = _carMarketService.GetAll(query);
+        //    return Ok(carMarketsDtos);
+        //}
         [HttpGet]
-        [Authorize(Policy = "CreatedAtLeast2CarMarkets")]// [AllowAnonymous]////allow to get without token
-        public ActionResult<PageResult<CarMarketDto>> GetAll([FromQuery]CarMarketQuery query)
+        //[AllowAnonymous]
+        public ActionResult<IEnumerable<CarMarketDto>> GetAllWithoutFiltering()
         {
-            var carMarketsDtos = _carMarketService.GetAll(query);
+            var carMarketsDtos = _carMarketService.GetAllWithoutFiltering();
             return Ok(carMarketsDtos);
         }
         [HttpPost]

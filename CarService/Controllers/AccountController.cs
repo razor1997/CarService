@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarService.Controllers
 {
-    [Route("carService/account")]
+    [Route("carservice/account")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -20,7 +20,7 @@ namespace CarService.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult RegisterUser([FromBody]RegisterUserDto dto)
+        public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
             _accountService.RegisterUser(dto);
             return Ok();
@@ -29,7 +29,7 @@ namespace CarService.Controllers
         public ActionResult Login([FromBody]LoginDto dto)
         {
             string token = _accountService.GenerateJwt(dto);
-            return Ok(token);
+            return Ok(dto);
         }
     }
 }

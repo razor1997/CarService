@@ -7,7 +7,8 @@ namespace CarService.Services
     public interface ICarMarketService
     {
         int Create(CreateCarMarketDto dto);
-        PageResult<CarMarketDto> GetAll(CarMarketQuery query);
+        //PageResult<CarMarketDto> GetAll(CarMarketQuery query);
+        IEnumerable<CarMarketDto> GetAllWithoutFiltering();
         CarMarketDto GetById(int id);
         void Delete(int id);
         void Update(int id, UpdateCarMarketDto dto);

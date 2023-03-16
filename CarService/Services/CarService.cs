@@ -63,7 +63,7 @@ namespace CarService.Services
             return true;
         }
 
-        public void Update(int id, CarDto dto)
+        public void Update(int id, CreateCarDto dto)
         {
             var car = _dbContext
                 .Cars
@@ -73,9 +73,9 @@ namespace CarService.Services
 
             car.Mark = dto.Mark;
             car.Model = dto.Model;
-            car.EngineType = dto.EngineType;
-            car.BuyCost = dto.BuyCost;
-            car.Capacity = dto.EngineCapacity;
+            //car.EngineType = dto.;
+            //car.BuyCost = dto.BuyCost;
+            //car.Capacity = dto.EngineCapacity;
 
             _dbContext.SaveChanges();
         }

@@ -15,5 +15,7 @@ namespace CarService.Models
         public string Street { get; set; }
         public string PostalCode { get; set; }
         public List<CarDto> Cars { get; set; }
+        public string PhotoUrl { get; set; }
+        public int Age { get; set; }
     }
 }

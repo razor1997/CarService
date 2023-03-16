@@ -75,6 +75,7 @@ namespace CarService
             services.AddScoped<Services.ICarService, Services.CarService>();
             services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarPartService, CarPartService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();

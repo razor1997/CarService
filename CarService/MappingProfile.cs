@@ -33,7 +33,7 @@ namespace CarService
                     Street = dto.Street
                 }));
             CreateMap<Repair, RepairDto>();
-
+            CreateMap<UserUpdate, User>();
         }
     }
 }

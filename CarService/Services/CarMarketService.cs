@@ -82,6 +82,13 @@ namespace CarService.Services
             var result = new PageResult<CarMarketDto>(carMarketsDtos, countTotalItems, query.PageSize, query.PageNumber);
             return result;
         }
+        public IEnumerable<CarMarketDto> GetAllWithoutFiltering()
+        {
+            var carMarkets = _dbContext.CarMarkets.ToList();
+
+            var carMarketsDtos = _mapper.Map<List<CarMarketDto>>(carMarkets);
+            return carMarketsDtos;
+        }
         public int Create(CreateCarMarketDto dto)
         {
             var carMarket = _mapper.Map<CarMarket>(dto);
