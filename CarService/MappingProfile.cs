@@ -34,6 +34,7 @@ namespace CarService
                 }));
             CreateMap<Repair, RepairDto>();
             CreateMap<UserUpdate, User>();
+            CreateMap<CarUpdateDto, CarDto>();
         }
     }
 }

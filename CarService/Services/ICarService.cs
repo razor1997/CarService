@@ -9,6 +9,6 @@ namespace CarService.Services
         IEnumerable<CarDto> GetAll();
         CarDto GetById(int id);
         bool Delete(int id);
-        void Update(int id, CreateCarDto dto);
+        void Update(int id, CarUpdateDto dto);
     }
 }

@@ -61,7 +61,7 @@ namespace CarService.Controllers
             return NotFound();
         }
         [HttpPut("{id}")]
-        public ActionResult Update([FromBody] CreateCarDto model, [FromRoute] int id)
+        public ActionResult Update([FromRoute] int id, [FromBody] CarUpdateDto model )
         {
             _carService.Update(id, model);
 

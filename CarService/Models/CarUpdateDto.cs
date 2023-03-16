@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CarService.Models
 {
-    public class CarUpdate
-    {
+    public class CarUpdateDto
+    { 
         public string Mark { get; set; }
         public string Model { get; set; }
         public int Body { get; set; }
@@ -15,6 +15,6 @@ namespace CarService.Models
         public int Mileage { get; set; }
         public int BuyCost { get; set; }
         public int YearProduction { get; set; }
-        public EngineType EngineType { get; set; }
+        public int EngineType { get; set; }
     }
 }

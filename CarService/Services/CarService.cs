@@ -63,7 +63,7 @@ namespace CarService.Services
             return true;
         }
 
-        public void Update(int id, CreateCarDto dto)
+        public void Update(int id, CarUpdateDto dto)
         {
             var car = _dbContext
                 .Cars
@@ -72,10 +72,15 @@ namespace CarService.Services
             if (car is null) throw new NotFoundException.NotFoundException("Car not found");
 
             car.Mark = dto.Mark;
-            car.Model = dto.Model;
-            //car.EngineType = dto.;
-            //car.BuyCost = dto.BuyCost;
-            //car.Capacity = dto.EngineCapacity;
+            car.Model = dto.Model; 
+            car.EngineType = _dbContext.EngineTypes.
+                                FirstOrDefault(
+                                et => et.Id == dto.EngineType);
+            car.BuyCost = dto.BuyCost;
+            car.Capacity = dto.Capacity;
+            car.YearProduction = dto.YearProduction;
+            car.Body = dto.Body;
+            car.Mileage = dto.Mileage;
 
             _dbContext.SaveChanges();
         }
