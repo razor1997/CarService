@@ -2,6 +2,7 @@
 using CarService.Entities;
 using CarService.Models;
 using CarService.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,14 @@ namespace CarService.Controllers
         private readonly CarServiceDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-
-        public UserController(CarServiceDbContext dbContext, IMapper mapper, IUserService userService)
+        private readonly IPhotoService _photoService;
+       
+        public UserController(CarServiceDbContext dbContext, IMapper mapper, IUserService userService, IPhotoService photoService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _userService = userService;
+            _photoService = photoService;
         }
         [HttpPost]
         public ActionResult CreateUser(CreateUserDto dto)
@@ -58,6 +61,29 @@ namespace CarService.Controllers
             _userService.Update(member.Id, member);
             if (await _userService.SaveAllAsync()) return NoContent();
             return BadRequest("Failed to update");
+        }
+        [HttpPost("add-photo")]
+        public async Task<ActionResult> AddPhoto([FromForm]IFormFile[] file)
+        {
+            var files = Request.Form.Files;
+            //var user = await _userService.GetUserByUsernameAsync(User.GetUsername());
+            //if(files. > 0)
+            foreach(var temp in files)
+            {
+                var result = await _photoService.AddPhotoAsync(temp);
+                var photo = new Photo
+                {
+                    Owner = OwnerType.otPerson,
+                    Url = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId
+                };
+
+                if (await _userService.SaveAllAsync())
+                {
+                    //return CreatedAtRoute("GetUser", _mapper.Map<PhotoDto>(photo)); //new { username = user.UserName },
+                }
+            }
+            return BadRequest("Problems");
         }
     }
 }

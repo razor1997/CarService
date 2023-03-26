@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CarService.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using CarService.Helper;
 
 namespace CarService
 {
@@ -64,6 +65,7 @@ namespace CarService
                 options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirements(20)));
                 options.AddPolicy("CreatedAtLeast2CarMarkets", builder => builder.AddRequirements(new MinimumCarMarketsCreatedRequirements(2)));
             });
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementsHandler>();
             services.AddScoped<IAuthorizationHandler, MinimumCarMarketsCreatedRequirementsHandler>();
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
@@ -83,6 +85,7 @@ namespace CarService
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddScoped<IUserContextService, UserContextService>();
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen();
             services.AddCors(options =>
