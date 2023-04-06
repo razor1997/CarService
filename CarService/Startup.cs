@@ -22,6 +22,9 @@ using System.Text;
 using CarService.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using CarService.Helper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CarService
 {
@@ -86,8 +89,9 @@ namespace CarService
             services.AddScoped<RequestTimeMiddleware>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddScoped<IPhotoService, PhotoService>();
-            services.AddHttpContextAccessor();
             services.AddSwaggerGen();
+            services.AddHttpContextAccessor();
+            //services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddCors(options =>
             {
                 options.AddPolicy("FrontEndClient", builder =>

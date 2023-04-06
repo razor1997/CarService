@@ -11,5 +11,6 @@ namespace CarService.Services
         User GetByEmail(string emailAddress);
         void Update(int id, UserUpdate dto);
         Task<bool> SaveAllAsync();
+        Task<User> GetUserByUsernameAsync(string username);
     }
 }

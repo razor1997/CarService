@@ -3,6 +3,7 @@ using CarService.Entities;
 using CarService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,12 @@ namespace CarService.Services
         public async Task<bool> SaveAllAsync()
         {
             return await _dbContext.SaveChangesAsync() > 0;
+        }
+        public async Task <User> GetUserByUsernameAsync(String username)
+        {
+            return await _dbContext.Users
+                .Where(u => u.Name == username)
+                .SingleOrDefaultAsync();
         }
     }
 }

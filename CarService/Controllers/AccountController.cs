@@ -28,7 +28,8 @@ namespace CarService.Controllers
         [HttpPost("login")]
         public ActionResult Login([FromBody]LoginDto dto)
         {
-            string token = _accountService.GenerateJwt(dto);
+            dto.Token = _accountService.GenerateJwt(dto);
+            
             return Ok(dto);
         }
     }

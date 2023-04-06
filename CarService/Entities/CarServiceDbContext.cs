@@ -17,7 +17,7 @@ namespace CarService.Entities
         public DbSet<CarMarketAddress> CarMarketAddresses { get; set; }
         public DbSet<CarPart> CarParts { get; set; }
         public DbSet<EngineType> EngineTypes { get; set; }
-      
+        public DbSet<Photo> Photos { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

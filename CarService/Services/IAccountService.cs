@@ -6,5 +6,6 @@ namespace CarService.Services
     {
         void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginDto dto);
+        string GetUserName();
     }
 }
