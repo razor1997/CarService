@@ -19,6 +19,8 @@ namespace CarService.Models
         public int EngineTypeId { get; set; }
         public EngineType EngineType { get; set; }
         public virtual List<RepairDto> Parts { get; set; }
+        public virtual List<Photo> Photos { get; set; }
+        public string PhotoUrl { get; set; }
 
     }
 }

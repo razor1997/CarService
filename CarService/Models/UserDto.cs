@@ -12,9 +12,13 @@ namespace CarService.Models
         public string SurName { get; set; }
         public string About { get; set; }
         public string City { get; set; }
+        public string Country { get; set; }
         public string Street { get; set; }
         public string PostalCode { get; set; }
+        public string LookingFor { get; set; }
+        public string Interests { get; set; }
         public List<CarDto> Cars { get; set; }
+        public List<PhotoDto> Photos { get; set; }
         public string PhotoUrl { get; set; }
         public int Age { get; set; }
         public string Token { get; set; }

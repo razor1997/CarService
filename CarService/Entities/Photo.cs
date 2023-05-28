@@ -11,7 +11,7 @@ namespace CarService.Entities
         public string Url { get; set; }
         public bool IsMain { get; set; }
         public string PublicId { get; set; }
-        public OwnerType Owner { get; set; }
-        public int OwnerId { get; set; }
+        public int UserId { get; set; }
+        public int CarId { get; set; }  
     }
 }

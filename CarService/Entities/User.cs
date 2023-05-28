@@ -15,7 +15,7 @@ namespace CarService.Entities
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set;     }
         public virtual List <Car> Cars { get; set; }
-
+        public virtual List<Photo> Photos{ get; set; }
         public string? About { get; set; }
         public string ContactNumber { get; set; }   
         public string PasswordHash { get; set; }
@@ -25,6 +25,7 @@ namespace CarService.Entities
         public string City { get; set; }
         public string Country { get; set; }
         public string LookingFor { get; set; }
+        public string Interests { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime LastActive { get; set; } = DateTime.Now;
     }

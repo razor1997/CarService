@@ -4,14 +4,16 @@ using CarService.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarService.Migrations
 {
     [DbContext(typeof(CarServiceDbContext))]
-    partial class CarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230416200057_RemoveColumnOwnerFromPhotos")]
+    partial class RemoveColumnOwnerFromPhotos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,9 +270,6 @@ namespace CarService.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Interests")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastActive")

@@ -27,13 +27,16 @@ namespace CarService.Services
 
             return users;
         }
-        public User GetByEmail(string emailAddress)
+        public UserDto GetByEmail(string emailAddress)
         {
             var user = _dbContext.Users
                 .Where(u => u.Email == emailAddress)
+                .Include(p =>p.Photos)
                 .FirstOrDefault();
             if (user is null) throw new NotFoundException.NotFoundException("User not found");
-            return user;
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url;
+            return userDto;
         }
         public void Update(int id, UserUpdate dto)
         {
@@ -53,6 +56,7 @@ namespace CarService.Services
         {
             return await _dbContext.Users
                 .Where(u => u.Name == username)
+                .Include(p => p.Photos)
                 .SingleOrDefaultAsync();
         }
     }

@@ -52,9 +52,11 @@ namespace CarService.Services
         {
             var user = _context.Users
                 .Include(u => u.Role)
+                .Include(p => p.Photos)            
                 .FirstOrDefault(u => u.Email == dto.Email)
                 ;
-            if(user is null)
+            
+            if(user is null || dto.Password is null)
             {
                 throw new BadRequestException("Invalid username or password");
             }

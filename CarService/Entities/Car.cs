@@ -18,5 +18,7 @@ namespace CarService.Entities
         public virtual User User { get; set; }
         public virtual EngineType EngineType { get; set; }
         public virtual List<Repair> Repairs { get; set; }
+        public virtual List <Photo> Photos{ get; set; }
+
     }
 }

@@ -29,7 +29,7 @@ namespace CarService.Controllers
         public ActionResult Login([FromBody]LoginDto dto)
         {
             dto.Token = _accountService.GenerateJwt(dto);
-            
+
             return Ok(dto);
         }
     }

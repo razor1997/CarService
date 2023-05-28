@@ -8,7 +8,7 @@ namespace CarService.Services
     public interface IUserService
     {
         IEnumerable<User> GetAll();
-        User GetByEmail(string emailAddress);
+        UserDto GetByEmail(string emailAddress);
         void Update(int id, UserUpdate dto);
         Task<bool> SaveAllAsync();
         Task<User> GetUserByUsernameAsync(string username);

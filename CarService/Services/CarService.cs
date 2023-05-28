@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarService.Services
 {
@@ -38,17 +39,20 @@ namespace CarService.Services
                 //.Include(c => c.AddSomething) temporary
                 .ToList();
             var carsDtos = _mapper.Map<List<CarDto>>(cars);
-
+            foreach (var car in carsDtos)
+            {
+                car.PhotoUrl = car.Photos.FirstOrDefault( x => x.IsMain)?.Url;
+            }
             return carsDtos;
         }
 
-        public int Create(CreateCarDto dto)
+        public Car Create(CreateCarDto dto)
         {
             var car = _mapper.Map<Car>(dto);
             _dbContext.Cars.Add(car);
             _dbContext.SaveChanges();
 
-            return car.Id;
+            return car;
         }
         public bool Delete(int id)
         {

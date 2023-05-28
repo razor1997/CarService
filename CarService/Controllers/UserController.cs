@@ -59,7 +59,7 @@ namespace CarService.Controllers
         public ActionResult<User> GetByEmail([FromRoute] string email)
         {
             var user = _userService.GetByEmail(email);
-
+            
             return Ok(user);
         }
         [HttpPut]
@@ -86,16 +86,16 @@ namespace CarService.Controllers
                     var result = await _photoService.AddPhotoAsync(temp);
                     var photo = new Photo
                     {
-                        Owner = OwnerType.otPerson,
                         Url = result.SecureUrl.AbsoluteUri,
                         PublicId = result.PublicId,
-                        OwnerId = user.Id,
-                        IsMain = true
+                        UserId = user.Id,
+                        IsMain = true,
+                        CarId = 0
                     };
-
+                    user.Photos.Add(photo);
                     if (await _userService.SaveAllAsync())
                     {
-                        return CreatedAtRoute("GetUser", _mapper.Map<PhotoDto>(photo)); //new { username = user.UserName },
+                        return CreatedAtRoute("GetUser", new { username = user.Name }, _mapper.Map<PhotoDto>(photo)); 
                     }
                 }
                 return BadRequest("Problems");
