@@ -15,8 +15,9 @@ namespace CarService.Entities
         public int Mileage { get; set; }
         public int BuyCost { get; set; }
         public int YearProduction { get; set; }
+        public int EngineTypeId { get; set; }
         public virtual User User { get; set; }
-        public virtual EngineType EngineType { get; set; }
+        //public virtual EngineType EngineType { get; set; }
         public virtual List<Repair> Repairs { get; set; }
         public virtual List <Photo> Photos{ get; set; }
 

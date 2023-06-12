@@ -15,6 +15,6 @@ namespace CarService.Models
         public int Mileage { get; set; }
         public int BuyCost { get; set; }
         public int YearProduction { get; set; }
-        public int EngineType { get; set; }
+        public int EngineTypeId { get; set; }
     }
 }

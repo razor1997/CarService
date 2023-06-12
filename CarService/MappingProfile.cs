@@ -15,9 +15,10 @@ namespace CarService
         public MappingProfile()
         {
             CreateMap<Car, CarDto>();
-            //.ForMember(m => m.City, c => c.MapFrom(s => s.Address.City) helpful code
+                //.ForMember(m => m.EngineTypeId, c => c.MapFrom(s => s.EngineType)); 
             CreateMap<User, UserDto>();
-            CreateMap<CreateCarDto, Car>();
+            CreateMap<CreateCarDto, Car>()
+                .ForMember(m => m.EngineTypeId, c => c.MapFrom(s => s.EngineType));
             CreateMap<CreateUserDto, User>();
             CreateMap<CarMarket, CarMarketDto>()
                 .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))

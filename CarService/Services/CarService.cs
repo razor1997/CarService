@@ -36,14 +36,15 @@ namespace CarService.Services
         {
             var cars = _dbContext
                 .Cars
-                //.Include(c => c.AddSomething) temporary
+                .Include(c => c.Photos) 
                 .ToList();
             var carsDtos = _mapper.Map<List<CarDto>>(cars);
             foreach (var car in carsDtos)
             {
-                car.PhotoUrl = car.Photos.FirstOrDefault( x => x.IsMain)?.Url;
+                car.PhotoUrl = car.Photos.FirstOrDefault(x => x.IsMain)?.Url;
             }
             return carsDtos;
+
         }
 
         public Car Create(CreateCarDto dto)
@@ -77,9 +78,7 @@ namespace CarService.Services
 
             car.Mark = dto.Mark;
             car.Model = dto.Model; 
-            car.EngineType = _dbContext.EngineTypes.
-                                FirstOrDefault(
-                                et => et.Id == dto.EngineType);
+            car.EngineTypeId = dto.EngineTypeId;
             car.BuyCost = dto.BuyCost;
             car.Capacity = dto.Capacity;
             car.YearProduction = dto.YearProduction;

@@ -107,7 +107,15 @@ namespace CarService
                 new EngineType
                 {
                     Name = "Electric"
-                }
+                },
+                new EngineType
+                {
+                    Name = "Hybrid"
+                },
+                new EngineType
+                {
+                    Name = "Other"
+                },
             };
             return engineTypes;
         }
