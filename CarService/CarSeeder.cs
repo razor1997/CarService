@@ -17,13 +17,44 @@ namespace CarService
         {
             if(_dbContext.Database.CanConnect())
             {
+                if(!_dbContext.Roles.Any())
+                {
+                    var roles = GetRoles();
+                    _dbContext.Roles.AddRange(roles);
+                    _dbContext.SaveChanges();
+                }
                 if(!_dbContext.Cars.Any())
                 {
                     var cars = GetCars();
                     _dbContext.Cars.AddRange(cars);
                     _dbContext.SaveChanges();
                 }
+                if(!_dbContext.EngineTypes.Any())
+                {
+                    var engineTypes = GetEngineTypes();
+                    _dbContext.EngineTypes.AddRange(engineTypes);
+                    _dbContext.SaveChanges();
+                }
             }
+        }
+        private IEnumerable<Role> GetRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role()
+                {
+                    Name = "User"
+                },
+                new Role()
+                {
+                    Name = "Administrator"
+                },
+                new Role()
+                {
+                    Name = "Manager"
+                }
+            };
+            return roles;
         }
         private IEnumerable<Car> GetCars()
         {
@@ -33,13 +64,13 @@ namespace CarService
                 {
                     Mark = "BMW",
                     Model = "Series 5",
-                    Type = (int)CarBody.cbCombi
+                    Body = (int)CarBody.cbCombi
                 },
                 new Car
                 {
                     Mark = "Mercedes-Benz",
                     Model = "C - Class",
-                    Type = (int)CarBody.cbSedan,
+                    Body = (int)CarBody.cbSedan,
                     Repairs = new List<Repair>
                     {
                         new Repair
@@ -56,6 +87,37 @@ namespace CarService
                 }
             };
             return cars;
+        }
+        private IEnumerable<EngineType> GetEngineTypes()
+        {
+            var engineTypes = new List<EngineType>()
+            {
+                new EngineType
+                {
+                    Name = "Petrol"
+                },
+                new EngineType
+                {
+                    Name = "Diesel"
+                },
+                new EngineType
+                {
+                    Name = "LPG"
+                },
+                new EngineType
+                {
+                    Name = "Electric"
+                },
+                new EngineType
+                {
+                    Name = "Hybrid"
+                },
+                new EngineType
+                {
+                    Name = "Other"
+                },
+            };
+            return engineTypes;
         }
     }
 }

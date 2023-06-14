@@ -26,24 +26,174 @@ namespace CarService.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("Body")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BuyCost")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EngineTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Mark")
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
+                    b.Property<int>("Mileage")
+                        .HasColumnType("int");
+
                     b.Property<string>("Model")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("YearProduction")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EngineTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarMarket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasDelivery")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CarMarkets");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarMarketAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CarMarketAddresses");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarPart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("CarMarketId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarMarketId");
+
+                    b.ToTable("CarParts");
+                });
+
+            modelBuilder.Entity("CarService.Entities.EngineType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EngineTypes");
+                });
+
+            modelBuilder.Entity("CarService.Entities.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("CarService.Entities.Repair", b =>
@@ -72,6 +222,22 @@ namespace CarService.Migrations
                     b.ToTable("Repairs");
                 });
 
+            modelBuilder.Entity("CarService.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("CarService.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -82,15 +248,46 @@ namespace CarService.Migrations
                     b.Property<string>("About")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactEmail")
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Interests")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastActive")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LookingFor")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SurName")
                         .HasMaxLength(50)
@@ -98,14 +295,61 @@ namespace CarService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CarService.Entities.Car", b =>
                 {
-                    b.HasOne("CarService.Entities.User", null)
+                    b.HasOne("CarService.Entities.EngineType", "EngineType")
+                        .WithMany()
+                        .HasForeignKey("EngineTypeId");
+
+                    b.HasOne("CarService.Entities.User", "User")
                         .WithMany("Cars")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("EngineType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarMarket", b =>
+                {
+                    b.HasOne("CarService.Entities.CarMarketAddress", "Address")
+                        .WithOne("CarMarket")
+                        .HasForeignKey("CarService.Entities.CarMarket", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarService.Entities.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarPart", b =>
+                {
+                    b.HasOne("CarService.Entities.CarMarket", "CarMarket")
+                        .WithMany("Parts")
+                        .HasForeignKey("CarMarketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CarMarket");
+                });
+
+            modelBuilder.Entity("CarService.Entities.Photo", b =>
+                {
+                    b.HasOne("CarService.Entities.User", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarService.Entities.Repair", b =>
@@ -115,14 +359,37 @@ namespace CarService.Migrations
                         .HasForeignKey("CarId");
                 });
 
+            modelBuilder.Entity("CarService.Entities.User", b =>
+                {
+                    b.HasOne("CarService.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("CarService.Entities.Car", b =>
                 {
                     b.Navigation("Repairs");
                 });
 
+            modelBuilder.Entity("CarService.Entities.CarMarket", b =>
+                {
+                    b.Navigation("Parts");
+                });
+
+            modelBuilder.Entity("CarService.Entities.CarMarketAddress", b =>
+                {
+                    b.Navigation("CarMarket");
+                });
+
             modelBuilder.Entity("CarService.Entities.User", b =>
                 {
                     b.Navigation("Cars");
+
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

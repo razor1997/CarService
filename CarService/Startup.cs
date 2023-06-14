@@ -1,5 +1,6 @@
 using AutoMapper;
 using CarService.Entities;
+using CarService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarService.Middleware;
+using Microsoft.AspNetCore.Identity;
+using CarService.Models;
+using CarService.Models.Validators;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CarService.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using CarService.Helper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CarService
 {
@@ -25,16 +40,76 @@ namespace CarService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var authenticationSettings = new AuthenticationSettings();
+            //var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+            Configuration.GetSection("Authentication").Bind(authenticationSettings);
+            services.AddSingleton(authenticationSettings);
+            //services.AddSingleton<IConfiguration>(configuration);
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "Bearer";
+                option.DefaultScheme = "Bearer";
+                option.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = authenticationSettings.JwtIssuer,
+                    ValidAudience = authenticationSettings.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+                };
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasPhoneNumber", builder => builder.RequireClaim("PhoneNumber"));
+                options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirements(20)));
+                options.AddPolicy("CreatedAtLeast2CarMarkets", builder => builder.AddRequirements(new MinimumCarMarketsCreatedRequirements(2)));
+            });
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementsHandler>();
+            services.AddScoped<IAuthorizationHandler, MinimumCarMarketsCreatedRequirementsHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddRazorPages();
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<CarServiceDbContext>();
             services.AddScoped<CarSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
+            services.AddScoped<Services.ICarService, Services.CarService>();
+            services.AddScoped<Services.ICarMarketService, Services.CarMarketService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICarPartService, CarPartService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            services.AddScoped<IValidator<CarMarketQuery>, CarMarketQueryValidator>();
+            services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<RequestTimeMiddleware>();
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddSwaggerGen();
+            services.AddHttpContextAccessor();
+            //services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEndClient", builder =>
+
+                    builder.AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .WithOrigins("AllowedWithOrigins")
+                    );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CarSeeder seeder)
         {
+            app.UseResponseCaching();
+            app.UseStaticFiles();
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
             seeder.Seed();
             if (env.IsDevelopment())
             {
@@ -46,12 +121,21 @@ namespace CarService
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<RequestTimeMiddleware>();
+            app.UseAuthentication();
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Car Service API");
+            });
+
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

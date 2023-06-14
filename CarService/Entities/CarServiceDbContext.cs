@@ -11,7 +11,13 @@ namespace CarService.Entities
         private string _connectionString = "Server=(localdb)\\mssqllocaldb;Database=CarServiceDb;Trusted_Connection=True;";
         public DbSet<Car> Cars { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Repair> Repairs { get; set; }
+        public DbSet<CarMarket> CarMarkets { get; set; }
+        public DbSet<CarMarketAddress> CarMarketAddresses { get; set; }
+        public DbSet<CarPart> CarParts { get; set; }
+        public DbSet<EngineType> EngineTypes { get; set; }
+        public DbSet<Photo> Photos { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,11 +25,27 @@ namespace CarService.Entities
                 .Property(r => r.Mark)
                 .HasMaxLength(25);
             modelBuilder.Entity<User>()
+                .Property(u => u.Name)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
+            modelBuilder.Entity<Role>()
                 .Property(r => r.Name)
                 .IsRequired();
             //modelBuilder.Entity<User>()
             //    .Property(u => u.SurName)
             //    .HasMaxLength(50);
+            modelBuilder.Entity<CarMarket>()
+                .Property(cm => cm.Name)
+                .IsRequired()
+                .HasMaxLength(25);
+            modelBuilder.Entity<CarPart>()
+                .Property(cp => cp.Category)
+                .IsRequired();
+            modelBuilder.Entity<EngineType>()
+                .Property(e => e.Name)
+                .HasMaxLength(25);
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
