@@ -28,6 +28,14 @@ namespace CarService.Controllers
         [HttpPost("login")]
         public ActionResult Login([FromBody]LoginDto dto)
         {
+            if (dto.Email is null || dto.Password is null)
+            {
+                return Unauthorized("Invalid username or passwordDUPA");
+            }
+            if(!_accountService.ValidateLoginUser(dto.Email, dto.Password))
+            {
+                return Unauthorized("Invalid username or passwordDUPA");
+            }
             dto.Token = _accountService.GenerateJwt(dto);
 
             return Ok(dto);

@@ -6,6 +6,7 @@ namespace CarService.Services
     {
         void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginDto dto);
+        bool ValidateLoginUser(string emailAddress, string password);
         string GetUserName();
     }
 }

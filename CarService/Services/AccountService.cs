@@ -56,10 +56,6 @@ namespace CarService.Services
                 .FirstOrDefault(u => u.Email == dto.Email)
                 ;
             
-            if(user is null || dto.Password is null)
-            {
-                throw new BadRequestException("Invalid username or password");
-            }
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
             if(result == Microsoft.AspNetCore.Identity.PasswordVerificationResult.Failed)
             {
@@ -98,6 +94,24 @@ namespace CarService.Services
             var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
             var claimsPrincipal = new ClaimsPrincipal(identity);
             return tokenHandler.WriteToken(token);
+        }
+        public bool ValidateLoginUser(string emailAddress, string password)
+        {
+            var user = _context.Users
+             .Include(u => u.Role)
+             .Include(p => p.Photos)
+             .FirstOrDefault(u => u.Email == emailAddress)
+             ;
+            if(user == null)
+            {
+                return false;
+            }
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result == Microsoft.AspNetCore.Identity.PasswordVerificationResult.Failed)
+            {
+                return false;
+            }
+            return true;
         }
         public string GetUserName()
         {
